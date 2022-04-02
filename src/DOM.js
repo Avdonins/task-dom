@@ -5,6 +5,11 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++)
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            '<' + tag + '>' + content + '</' + tag + '>',
+        );
 }
 
 /*
@@ -15,6 +20,30 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    let div = document.createElement('div');
+    div.className = 'item_1';
+    let lv = 2;
+    if (level >= lv) {
+        for (let i = 0; i < childrenCount; i++) {
+            div.insertAdjacentHTML(
+                'beforeend',
+                '<div class="item_' + lv + '"></div>',
+            );
+        }
+    }
+
+    for (lv; lv < level; lv++) {
+        let mass = div.querySelectorAll('.item_' + lv);
+        for (let i = 0; i < mass.length; i++) {
+            for (let j = 0; j < childrenCount; j++) {
+                mass[i].insertAdjacentHTML(
+                    'beforeend',
+                    '<div class="item_' + (lv + 1) + '"></div>',
+                );
+            }
+        }
+    }
+    return div;
 }
 
 /*
@@ -26,4 +55,16 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    let div = generateTree(2, 3),
+        needDiv = div.querySelectorAll('.item_2'),
+        i = 0;
+    while (i < needDiv.length) {
+        let section = document.createElement('section');
+        section.className = 'item_2';
+        section.innerHTML = needDiv[i].innerHTML;
+        div.append(section);
+        needDiv[i].remove();
+        i++;
+    }
+    return div;
 }
